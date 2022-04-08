@@ -65,10 +65,8 @@
     // 删除
     // 监听行工具事件
     table.on('tool(cate)', function (obj) {
-      var data = obj.data;
-      console.log(obj.data)
+      let data = obj.data;
       const id = data.cate_id;
-      console.log(id);
       if (obj.event === 'del') {
         layer.confirm('确定删除吗？', async function (index) {
           let rows = await $.post(`/delCateData/${id}`)
