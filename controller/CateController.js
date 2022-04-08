@@ -14,6 +14,7 @@ CateController.cateData = async (req, res) => {
     // 1.编写sql 查询数据
     const sql = 'select * from category';
     const data = await query(sql)
+    // console.log(data);
     // 2.返回json数据（规范）给前端
     const responseData = {
         data,
@@ -39,10 +40,36 @@ CateController.updCateData = async (req, res) => {
     const successData = {
         code: 0,
         message: "update success"
+
     }
     const failData = {
         code: 1,
         message: "fail success"
+    }
+
+    if (affectedRows > 0) {
+        res.json(successData)
+    } else {
+        res.json(failData)
+    }
+}
+
+CateController.delCateData = async (req, res) => {
+    let { id } = req.params;
+    console.log(id);
+    const sql = `delete from category where cate_id = ${id}`
+    const {
+        affectedRows
+    } = await query(sql)
+
+    const successData = {
+        code: 0,
+        message: "删除成功"
+
+    }
+    const failData = {
+        code: 2,
+        message: "删除失败"
     }
 
     if (affectedRows > 0) {

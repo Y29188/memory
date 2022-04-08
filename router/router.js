@@ -12,6 +12,7 @@ router.get('/', IndexController.index)
 router.get('/catelist', CateController.index)
 // 展示文章列表页面
 router.get('/artlist', ArtController.index)
+
 // 后台登录页
 router.get('/login', IndexController.login)
 router.get('/test', IndexController.test)
@@ -22,4 +23,9 @@ router.get('/cateData', CateController.cateData)
 
 // 编辑分类的接口  
 router.post('/updCateData', CateController.updCateData)
+
+// 删除分类指定的数据
+router.post('/delCateData/:id',CateController.delCateData)
+
 module.exports = router;
+

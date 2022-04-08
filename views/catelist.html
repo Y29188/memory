@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>小眠后台管理系统</title>
+  <title>分类后台管理系统</title>
   <link rel="stylesheet" href="/assets/layui/css/layui.css">
 </head>
 
@@ -20,7 +20,7 @@
       <!-- 内容主体区域 -->
       <div style="padding: 15px;">
         <table class="layui-table" id="cate" lay-filter="cate">
-         
+
         </table>
       </div>
     </div>
@@ -30,36 +30,62 @@
 
 <script src="/assets/layui/layui.js"></script>
 <script>
-  layui.use('table', function(){
+  layui.use('table', function () {
     var table = layui.table;
     var $ = layui.jquery;
-    
+
     table.render({
       elem: '#cate'
-      ,url: '/cateData',
-      toolbar:'#cateTool'
-      ,cols: [[
-        {field:'cate_id', width:80, title: '序号', sort: true}
-        ,{field:'cate_name', width:100, edit:'text',title: '分类名称'}
-        ,{field:'orderBy', width:80, edit:'text',title: '排序', sort: true}
-        ,{fixed:"right", width:80, title: '操作',templet:(obj)=>{
-          return `
+      , url: '/cateData',
+      toolbar: '#cateTool'
+      , cols: [[
+        { field: 'cate_id', width: 80, title: '序号', sort: true }
+        , { field: 'cate_name', width: 100, edit: 'text', title: '分类名称' }
+        , { field: 'orderBy', width: 80, edit: 'text', title: '排序', sort: true }
+        , {
+          fixed: "right", width: 150, title: '操作', templet: (obj) => {
+            return `
           <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
           <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
           `
-        }}
+          }
+        }
       ]]
     });
 
     //监听单元格编辑
     table.on('edit(cate)', async function (obj) {
-      const {data} = obj;
-      const {code,message} = await $.post('/updCateData',data)
-      if(code === 0){
+      const { data } = obj;
+      const { code, message } = await $.post('/updCateData', data)
+      if (code === 0) {
         layer.msg(message)
       }
     });
+
+    //删除
+    //监听行工具事件
+    table.on('tool(cate)', function (obj) {
+      var data = obj.data;
+      console.log(obj.data)
+      const id = data.cate_id;
+      console.log(id);
+      if (obj.event === 'del') {
+        layer.confirm('确定删除吗？', async function (index) {
+          let rows = await $.post(`/delete/${id}`)
+          let { code, message } = rows
+          if (code === 0) {
+            layer.msg(message)
+            obj.del();
+            layer.close(index);
+          } else {
+            layer.msg(message)
+          }
+
+        });
+      }
+    });
+
   });
-  </script>
+</script>
 
 </html>
