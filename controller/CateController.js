@@ -80,4 +80,28 @@ CateController.delCateData = async (req, res) => {
     }
 }
 
+// 添加
+// 添加
+CateController.addCateData = async (req, res) => {
+    const { cate_name, orderBy } = req.body;
+    const sql = `insert into category(cate_name,orderBy) values('${cate_name}',${orderBy})`;
+    const { affectedRows } = await query(sql);
+    const successData = {
+        code: 0,
+        message: "添加成功"
+    }
+    const failData = {
+        code: 1,
+        message: "添加失败"
+    }
+
+
+    if (affectedRows > 0) {
+        res.json(successData);
+    } else {
+        res.json(failData);
+    }
+}
+
+
 module.exports = CateController;

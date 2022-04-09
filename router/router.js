@@ -28,5 +28,8 @@ router.post('/updCateData', CateController.updCateData)
 // 删除分类指定的数据接口
 router.post('/delCateData',CateController.delCateData)
 
+// 添加分类数据
+router.post('/addCateData',CateController.addCateData)
+
 module.exports = router;
 
