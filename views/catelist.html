@@ -45,7 +45,6 @@
         , {
           fixed: "right", width: 150, title: '操作', templet: (obj) => {
             return `
-          <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
           <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
           `
           }
@@ -62,27 +61,29 @@
       }
     });
 
-    // 删除
+    // 删除操作
     // 监听行工具事件
     table.on('tool(cate)', function (obj) {
-      let data = obj.data;
-      const id = data.cate_id;
-      if (obj.event === 'del') {
-        layer.confirm('确定删除吗？', async function (index) {
-          let rows = await $.post(`/delCateData/${id}`)
-          let { code, message } = rows
+      const { event, data } = obj;
+      const { cate_id } = data;
+      // 询问框
+      if (event === 'del') {
+        layer.confirm('确认删除吗', {
+          btn: ['是的', '取消'] //按钮
+        }, async function () {
+          const { code } = await $.post('/delCateData', { cate_id })
           if (code === 0) {
-            layer.msg(message)
-            obj.del();
-            layer.close(index);
-          } else {
-            layer.msg(message)
+            layer.msg('删除成功', { icon: 1 });
+            // 刷新（重载）表格数据
+            // location.reload();
+            table.reload('cate')
           }
+
+        }, function () {
 
         });
       }
     });
-
   });
 </script>
 

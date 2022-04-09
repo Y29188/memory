@@ -24,6 +24,7 @@ CateController.cateData = async (req, res) => {
     res.json(responseData)
 }
 
+// 编辑
 CateController.updCateData = async (req, res) => {
     //1. 接收post参数
     const {
@@ -54,22 +55,22 @@ CateController.updCateData = async (req, res) => {
     }
 }
 
+// 删除
 CateController.delCateData = async (req, res) => {
-    let { id } = req.params;
-    console.log(id);
-    const sql = `delete from category where cate_id = ${id}`
+    const {
+        cate_id
+    } = req.body;
+    const sql = `delete from category where cate_id = ${cate_id}`
     const {
         affectedRows
     } = await query(sql)
-
     const successData = {
         code: 0,
-        message: "删除成功"
-
+        message: "delete success"
     }
     const failData = {
-        code: 2,
-        message: "删除失败"
+        code: 1,
+        message: "delete fail"
     }
 
     if (affectedRows > 0) {

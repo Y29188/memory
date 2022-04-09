@@ -8,6 +8,7 @@ const ArtController = require('../controller/ArtController.js')
 
 // 后台首页
 router.get('/', IndexController.index)
+router.get('/systemData', IndexController.systemData)
 // 展示分类列表页面
 router.get('/catelist', CateController.index)
 // 展示文章列表页面
@@ -24,8 +25,8 @@ router.get('/cateData', CateController.cateData)
 // 编辑分类的接口  
 router.post('/updCateData', CateController.updCateData)
 
-// 删除分类指定的数据
-router.post('/delCateData/:id',CateController.delCateData)
+// 删除分类指定的数据接口
+router.post('/delCateData',CateController.delCateData)
 
 module.exports = router;
 
