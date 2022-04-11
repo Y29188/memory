@@ -74,7 +74,7 @@ UserController.updUserInfo = async (req, res) => {
     }
 
     if (affectedRows > 0) {
-        // 取出用户信息，然后同步session和cookie中的用户信息
+        // 需要先取出用户信息，然后同步session和cookie中的用户信息
         const sql = `select * from users where id = ${id}`
         const result = await query(sql)
         // 将信息记录到session或cookie
@@ -88,8 +88,5 @@ UserController.updUserInfo = async (req, res) => {
         res.json(failData)
     }
 }
-
-
-
 
 module.exports = UserController;

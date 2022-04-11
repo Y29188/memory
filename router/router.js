@@ -44,8 +44,11 @@ router.post('/addCateData', CateController.addCateData)
 // 登录接口
 router.post('/userLogin', UserController.userLogin)
 
-// 登出接口
+// 退出登录接口
 router.post('/userLogout', UserController.userLogout)
+
+// 更新用户信息
+router.post('/updUserInfo',UserController.updUserInfo)
 
 module.exports = router;
 

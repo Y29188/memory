@@ -1,15 +1,15 @@
+
 <div class="layui-header">
   <div class="layui-logo layui-hide-xs layui-bg-black" id="logoText">小眠博客管理系统</div>
-
+  
   <ul class="layui-nav layui-layout-right">
     <li class="layui-nav-item layui-hide layui-show-md-inline-block">
       <a href="javascript:;">
-        <img id="avatar" src="https://img2.baidu.com/it/u=1012304310,3936720750&fm=26&fmt=auto&gp=0.jpg" 
-          class="layui-nav-img">
+        <img id="avatar" src="https://img2.baidu.com/it/u=1012304310,3936720750&fm=26&fmt=auto&gp=0.jpg"  class="layui-nav-img">
         <span id="username">请登录</span>
       </a>
       <dl class="layui-nav-child">
-        <dd><a href="">个人信息</a></dd>
+        <dd><a href="javascript:;" id="showUserInfo">个人信息</a></dd>
         <dd><a href="">修改密码</a></dd>
         <dd><a href="javascript:;" id="logout">退出</a></dd>
       </dl>
@@ -21,17 +21,3 @@
     </li>
   </ul>
 </div>
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-<script>
-  let logoText = localStorage.getItem('logoText')
-  $("#logoText").text(logoText)
-  // 退出
-  $("#logout").on('click', async (event) => {
-    const { message, code } = await $.post('/userLogout')
-    if (code === 0) {
-      location.href = '/login'
-    } else {
-      alert('退出失败')
-    }
-  })
-</script>

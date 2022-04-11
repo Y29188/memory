@@ -28,6 +28,7 @@
   </div>
   <script src="/assets/layui/layui.js"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
   <script>
     // 获取cookie设置到header页面中，显示用户的信息
     let { username, intro, avatar } = JSON.parse(Cookies.get('userInfo'))
@@ -52,6 +53,158 @@
       // 存储到本地存储或cookie，供其他页面使用
       localStorage.setItem('logoText', logoText)
     });
+
+
+    let logoText = localStorage.getItem('logoText')
+    $("#logoText").text(logoText)
+    // 退出
+    $("#logout").on('click', async (event) => {
+      const {
+        message,
+        code
+      } = await $.post('/userLogout')
+      if (code === 0) {
+        location.href = '/login'
+      } else {
+        alert('退出失败')
+      }
+    })
+
+
+    // 查看个人信息
+    $("#showUserInfo").on('click', () => {
+      // 获取cookie中的用户信息
+      const {
+        id,
+        username,
+        avatar,
+        intro
+      } = JSON.parse(Cookies.get('userInfo'))
+      let userTemplate = `
+        <div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-block">
+              <input type="text" name="username" disabled value='${username}' lay-verify="title" autocomplete="off"  class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">您的照片</label>
+            <div class="layui-input-block">
+              <div class="layui-upload">
+                <button type="button" class="layui-btn" id="test1">上传图片</button>
+                <div class="layui-upload-list">
+                  <img class="layui-upload-img" id="demo1">
+                  <p id="demoText"></p>
+                </div>
+                <div style="width: 95px;">
+                  <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="demo">
+                    <div class="layui-progress-bar" lay-percent=""></div>
+                  </div>
+                </div>
+              </div> 
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">个人介绍</label>
+            <div class="layui-input-inline">
+              <textarea name="intro"   class="layui-textarea" id="" cols="30" rows="6">${intro}</textarea>
+            </div>
+          </div>
+          <div style="text-align:center;">
+            <button type="button" id="saveUser" class="layui-btn layui-btn-primary layui-border-blue layui-btn-fluid">保存</button>
+          </div>
+        </div>
+      `;
+
+      // 页面层
+      layer.open({
+        title: "修改个人信息",
+        type: 1,
+        skin: 'layui-layer-rim', // 加上边框
+        area: ['420px', '540px'], // 宽高
+        content: userTemplate,
+        success: function (layero, index) {
+          // 初始化上传
+          initUpload();
+        }
+      });
+    })
+
+    // 上传文件
+    function initUpload() {
+      // 常规使用 - 普通图片上传
+      const upload = layui.upload;
+      const element = layui.element;
+      var uploadInst = upload.render({
+        elem: '#test1',
+        url: '/avatar' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+        ,
+        before: function (obj) {
+          // 预读本地文件示例，不支持ie8
+          obj.preview(function (index, file, result) {
+            $('#demo1').attr('src', result);   // 图片链接（base64）
+          });
+
+          element.progress('demo', '0%');     // 进度条复位
+          layer.msg('上传中', {
+            icon: 16,
+            time: 0
+          });
+        },
+        done: function (res) {
+          // 如果上传失败
+          if (res.code > 0) {
+            return layer.msg('上传失败');
+          }
+          // 上传成功的一些操作
+          $('#demoText').html('');   // 置空上传失败的状态
+        },
+        error: function () {
+          // 演示失败状态，并实现重传
+          var demoText = $('#demoText');
+          demoText.html(
+            '<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+          demoText.find('.demo-reload').on('click', function () {
+            uploadInst.upload();
+          });
+        }
+        // 进度条
+        ,
+        progress: function (n, elem, e) {
+          element.progress('demo', n + '%'); // 可配合 layui 进度条元素使用
+          if (n == 100) {
+            layer.msg('上传完毕', {
+              icon: 1
+            });
+          }
+        }
+      });
+    }
+    // 保存用户信息
+    $(document).on('click', "#saveUser", async () => {
+      const {
+        id
+      } = JSON.parse(Cookies.get('userInfo'))
+      const intro = $("textarea[name='intro']").val()
+      const {
+        code,
+        message
+      } = await $.post('/updUserInfo', {
+        id,
+        intro
+      })
+      if (code === 0) {
+        layer.msg(message, {
+          icon: 1
+        })
+      } else {
+        layer.msg(message, {
+          icon: 2
+        })
+      }
+
+    })
   </script>
 </body>
 
