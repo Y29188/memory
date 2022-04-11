@@ -8,15 +8,8 @@ const query = require('../model/query.js')
 const IndexController = {};
 
 IndexController.index = (req, res) => {
-    // res.sendFile(`${viewsDir}/index.html`)
     res.render('index.html', {
     })
-}
-
-IndexController.systemData = async (req, res) => {
-    const sql = 'select * from settings';
-    const rows = await query(sql)
-    res.json(rows)
 }
 
 
@@ -87,6 +80,96 @@ IndexController.apiData = (req, res) => {
         count: 100,
         data: myData
     })
+}
+
+// 系统设置：获取数据
+IndexController.setting = (req, res) => {
+    res.render(`setting.html`)
+}
+IndexController.systemData = async (req, res) => {
+    const sql = 'select * from settings';
+    const data = await query(sql)
+    const responseData = {
+        data,
+        code: 0,
+        msg: "success"
+    }
+    res.json(responseData)
+}
+// 系统设置：编辑
+IndexController.updSystemData = async (req, res) => {
+    //1. 接收post参数
+    const {
+        system_id,
+        system_name,
+        val
+    } = req.body;
+    //2. 编写sql语句，执行，返回json结果
+    const sql = `update settings set system_name = '${system_name}',val = ${val} 
+    where system_id = ${system_id}`;
+    const {
+        affectedRows
+    } = await query(sql)
+    const successData = {
+        code: 0,
+        message: "update success"
+
+    }
+    const failData = {
+        code: 1,
+        message: "fail success"
+    }
+
+    if (affectedRows > 0) {
+        res.json(successData)
+    } else {
+        res.json(failData)
+    }
+}
+// 系统设置：删除
+IndexController.delSystemData = async (req, res) => {
+    const {
+        system_id
+    } = req.body;
+    const sql = `delete from settings where system_id = ${system_id}`
+    const {
+        affectedRows
+    } = await query(sql)
+    const successData = {
+        code: 0,
+        message: "delete success"
+    }
+    const failData = {
+        code: 1,
+        message: "delete fail"
+    }
+
+    if (affectedRows > 0) {
+        res.json(successData)
+    } else {
+        res.json(failData)
+    }
+}
+// 系统设置：添加
+IndexController.addSystemData = async (req, res) => {
+    const { system_name, val } = req.body;
+    const sql = `insert into category(system_name,val) values('${system_name}',${val})`;
+    const { affectedRows } = await query(sql);
+    const successData = {
+        code: 0,
+        message: "添加成功"
+    }
+    const failData = {
+        code: 1,
+        message: "添加失败"
+    }
+
+
+    if (affectedRows > 0) {
+        res.json(successData);
+    } else {
+        res.json(failData);
+    }
 }
 
 

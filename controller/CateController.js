@@ -23,8 +23,7 @@ CateController.cateData = async (req, res) => {
     }
     res.json(responseData)
 }
-
-// 编辑
+// 分类编辑
 CateController.updCateData = async (req, res) => {
     //1. 接收post参数
     const {
@@ -54,8 +53,7 @@ CateController.updCateData = async (req, res) => {
         res.json(failData)
     }
 }
-
-// 删除
+// 分类删除
 CateController.delCateData = async (req, res) => {
     const {
         cate_id
@@ -79,9 +77,7 @@ CateController.delCateData = async (req, res) => {
         res.json(failData)
     }
 }
-
-// 添加
-// 添加
+// 分类添加
 CateController.addCateData = async (req, res) => {
     const { cate_name, orderBy } = req.body;
     const sql = `insert into category(cate_name,orderBy) values('${cate_name}',${orderBy})`;

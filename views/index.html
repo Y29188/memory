@@ -28,6 +28,10 @@
   </div>
   <script src="/assets/layui/layui.js"></script>
   <script>
+    // 获取cookie设置到header页面中，显示用户的信息
+    let { username, intro, avatar } = JSON.parse(Cookies.get('userInfo'))
+
+
     //JS 
     layui.use(['element', 'layer', 'util'], async function () {
       var element = layui.element

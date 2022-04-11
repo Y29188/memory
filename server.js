@@ -2,11 +2,32 @@ const express = require('express');
 const path = require('path');
 const artTemplate = require('art-template');
 const express_template = require('express-art-template');
+const session = require('express-session')
+const checkSessAuth = require('./middleware/checkSessAuth')
 
 // 导入路由模块中间件
 const router = require('./router/router.js')
 
 const app = express();
+
+// 设置托管静态资源
+app.use('/assets', express.static(path.join(__dirname, 'assets')))
+
+// 初始化session
+app.use(session({
+    name: 'sessionID',
+    secret: "@%$#$%34353^&%^12",
+    cookie: {
+        path: "/",
+        httpOnly: true,
+        maxAge: 60000 * 24, // 设置有效期为24分钟，说明：24分钟内，不访问就会过期，如果24分钟内访问了。则有效期重新初始化为24分钟。
+    }
+}))
+
+
+// 中间件，判断session阻止翻墙
+app.use(checkSessAuth)
+
 
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({
@@ -20,8 +41,6 @@ app.engine('html', express_template);
 //设置视图引擎为上面的html
 app.set('view engine', 'html');
 
-// 设置托管静态资源
-app.use('/assets', express.static(path.join(__dirname, 'assets')))
 
 app.use(router)
 

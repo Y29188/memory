@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>分类后台管理系统</title>
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <!-- 导入公共页面 -->
+        {{ include "./common/header.html" }}
+
+        <!-- 导入公共页面 -->
+        {{ include "./common/side.html" }}
+
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div style="padding: 15px;">
+                <button type="button" class="layui-btn btnBook" lay-event="add" id="addbtn" title="添加样式">
+                    <i class="layui-icon">&#xe654;</i>
+                </button>
+            </div>
+            <div style="padding: 15px;">
+                <table class="layui-table" id="system" lay-filter="system">
+
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+
+
+<script src="/assets/layui/layui.js"></script>
+<script>
+    layui.use('table', function () {
+        var table = layui.table
+            , $ = layui.jquery
+            , layer = layui.layer
+
+        table.render({
+            elem: '#system'
+            , url: '/systemData',
+            toolbar: '#systemTool'
+            , cols: [[
+                { field: 'system_id', width: 350, align: 'center', title: '序号', sort: true }
+                , { field: 'system_name', width: 350, align: 'center', edit: 'text', title: '修改分类名称' }
+                , { field: 'val', width: 350, align: 'center', edit: 'text', title: '修改排序', sort: true }
+                , {
+                    fixed: "right", width: 350, align: 'center', title: '操作', templet: (obj) => {
+                        return `
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+          `
+                    }
+
+                }
+            ]]
+        });
+
+        //监听单元格编辑
+        table.on('edit(system)', async function (obj) {
+            const { data } = obj;
+            const { code, message } = await $.post('/updSystemData', data)
+            if (code === 0) {
+                layer.msg(message)
+            }
+        });
+
+        // 删除操作
+        // 监听行工具事件
+        table.on('tool(system)', function (obj) {
+            const { event, data } = obj;
+            const { system_id } = data;
+            // 询问框
+            if (event === 'del') {
+                layer.confirm('确认删除吗', {
+                    btn: ['是的', '取消'] //按钮
+                }, async function () {
+                    const { code } = await $.post('/delSystemData', { system_id })
+                    if (code === 0) {
+                        layer.msg('删除成功', { icon: 1 });
+                        // 刷新（重载）表格数据
+                        // location.reload();
+                        table.reload('system')
+                    }
+
+                }, function () {
+
+                });
+            }
+        });
+
+        // 添加
+        $("#addbtn").click(function () {
+            layer.prompt({ title: '请输入修改的分类名称', formType: 0 }, function (system_name, index) {
+                layer.close(index);
+                layer.prompt({ title: '请输入修改的排序', formType: 0 }, function (val, index) {
+                    layer.close(index);
+                    $.ajax({
+                        type: "post",
+                        url: `/addSystemData`,
+                        data: {
+                            system_name: system_name,
+                            val: val
+                        }
+                    })
+                    layer.msg('添加成功', { icon: 1 });
+                    setTimeout(function () {
+                        window.location.reload()
+                    }, 1000)
+                });
+            });
+        })
+
+    });
+</script>
+
+</html>

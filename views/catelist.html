@@ -19,7 +19,11 @@
 
     <div class="layui-body">
       <!-- 内容主体区域 -->
-      <a type="button" class="layui-btn btnBook" lay-event="add" id="add">添加</a>
+      <div style="padding: 15px;">
+        <button type="button" class="layui-btn btnBook" lay-event="add" id="addbtn" title="添加样式">
+          <i class="layui-icon">&#xe654;</i>
+        </button>
+      </div>
       <div style="padding: 15px;">
         <table class="layui-table" id="cate" lay-filter="cate">
 
@@ -44,11 +48,11 @@
       , url: '/cateData',
       toolbar: '#cateTool'
       , cols: [[
-        { field: 'cate_id', width: 80, title: '序号', sort: true }
-        , { field: 'cate_name', width: 100, edit: 'text', title: '分类名称' }
-        , { field: 'orderBy', width: 80, edit: 'text', title: '排序', sort: true }
+        { field: 'cate_id', width: 350, align: 'center' , title: '序号', sort: true }
+        , { field: 'cate_name', width: 350, align: 'center' , edit: 'text', title: '分类名称' }
+        , { field: 'orderBy', width: 350, align: 'center' , edit: 'text', title: '排序', sort: true }
         , {
-          fixed: "right", width: 150, title: '操作', templet: (obj) => {
+          fixed: "right", width: 350, align: 'center' , title: '操作', templet: (obj) => {
             return `
           <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
           `
@@ -92,7 +96,7 @@
     });
 
     // 添加
-    $("#add").click(function () {
+    $("#addbtn").click(function () {
       layer.prompt({ title: '请输入分类名称', formType: 0 }, function (cate_name, index) {
         layer.close(index);
         layer.prompt({ title: '请输入排序', formType: 0 }, function (orderBy, index) {
@@ -105,7 +109,7 @@
               orderBy: orderBy
             }
           })
-          layer.msg('添加成功');
+          layer.msg('添加成功', { icon: 1 });
           setTimeout(function () {
             window.location.reload()
           }, 1000)
