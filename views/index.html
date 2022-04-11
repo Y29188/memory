@@ -27,10 +27,10 @@
     </div>
   </div>
   <script src="/assets/layui/layui.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
   <script>
     // 获取cookie设置到header页面中，显示用户的信息
     let { username, intro, avatar } = JSON.parse(Cookies.get('userInfo'))
-
 
     //JS 
     layui.use(['element', 'layer', 'util'], async function () {
@@ -38,8 +38,9 @@
         , layer = layui.layer
         , util = layui.util
         , $ = layui.$;
-
+      $("#username").text(username)
       const result = await $.get('/systemData')
+
       let logoText = ''
       result.find(item => {
         if (item.name === 'logoText') {
@@ -48,10 +49,8 @@
         }
       })
       $("#logoText").text(logoText)
-
-      // 存储到本地存储或cookie，供其他页面使用,这是缓存
+      // 存储到本地存储或cookie，供其他页面使用
       localStorage.setItem('logoText', logoText)
-
     });
   </script>
 </body>
