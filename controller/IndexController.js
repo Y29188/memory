@@ -82,10 +82,11 @@ IndexController.apiData = (req, res) => {
     })
 }
 
-// 系统设置：获取数据
+
 IndexController.setting = (req, res) => {
     res.render(`setting.html`)
 }
+// 系统设置：获取数据
 IndexController.systemData = async (req, res) => {
     const sql = 'select * from settings';
     const data = await query(sql)
