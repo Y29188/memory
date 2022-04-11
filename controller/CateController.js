@@ -14,7 +14,6 @@ CateController.cateData = async (req, res) => {
     // 1.编写sql 查询数据
     const sql = 'select * from category';
     const data = await query(sql)
-    // console.log(data);
     // 2.返回json数据（规范）给前端
     const responseData = {
         data,
@@ -25,13 +24,13 @@ CateController.cateData = async (req, res) => {
 }
 // 分类编辑
 CateController.updCateData = async (req, res) => {
-    //1. 接收post参数
+    // 1. 接收post参数
     const {
         cate_id,
         cate_name,
         orderBy
     } = req.body;
-    //2. 编写sql语句，执行，返回json结果
+    // 2. 编写sql语句，执行，返回json结果
     const sql = `update category set cate_name = '${cate_name}',orderBy = ${orderBy} 
     where cate_id = ${cate_id}`;
     const {
