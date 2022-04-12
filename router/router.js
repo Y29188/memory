@@ -33,6 +33,8 @@ router.post('/delSystemData', IndexController.delSystemData)
 router.get('/catelist', CateController.index)
 // 展示文章列表页面
 router.get('/artlist', ArtController.index)
+// 文章列表接口数据
+router.get('/artData', ArtController.artData)
 
 
 // 后台登录页
@@ -63,6 +65,6 @@ router.post('/updUserInfo', UserController.updUserInfo)
 router.post('/avatar', upload.single('file'), UserController.avatar)
 
 // 统计分类文章总数
-// router.get('/cateCount', CateController.cateCount)
+router.get('/cateCount', CateController.cateCount)
 module.exports = router;
 
