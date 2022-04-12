@@ -15,6 +15,7 @@ const {
 
 const rename = promisify(fs.rename)
 
+// 用户登录
 UserController.userLogin = async (req, res) => {
     // 1. 接受参数
     let {
@@ -46,6 +47,7 @@ UserController.userLogin = async (req, res) => {
 
 }
 
+// 退出
 UserController.userLogout = async (req, res) => {
     // 1. 清除session
     req.session.destroy(function (err) {
@@ -60,7 +62,7 @@ UserController.userLogout = async (req, res) => {
     })
 
 }
-
+// 修改个人信息
 UserController.updUserInfo = async (req, res) => {
     const {
         id,
@@ -94,7 +96,7 @@ UserController.updUserInfo = async (req, res) => {
         res.json(failData)
     }
 }
-
+// 头像
 UserController.avatar = async (req, res) => {
     // 1. 获取用户在session中的信息
     const {
