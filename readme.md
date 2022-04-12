@@ -5,3 +5,5 @@
 使用文档：https://www.layuiweb.com/doc/modules/table.html
 参考示例：https://www.layuiweb.com/demo/table/toolbar.html
 
+git注意事项
+git默认不能上传一个空的文件夹，若要上传，则需要在此文件夹中创建一个名为 `.gitkeep`

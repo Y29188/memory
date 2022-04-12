@@ -1,11 +1,12 @@
-
 <div class="layui-header">
   <div class="layui-logo layui-hide-xs layui-bg-black" id="logoText">小眠博客管理系统</div>
-  
+
   <ul class="layui-nav layui-layout-right">
     <li class="layui-nav-item layui-hide layui-show-md-inline-block">
       <a href="javascript:;">
-        <img id="avatar" src="https://img2.baidu.com/it/u=1012304310,3936720750&fm=26&fmt=auto&gp=0.jpg"  class="layui-nav-img">
+        <img id="avatar"
+          src=""
+          class="layui-nav-img">
         <span id="username">请登录</span>
       </a>
       <dl class="layui-nav-child">
@@ -21,3 +22,16 @@
     </li>
   </ul>
 </div>
+<script src="https://cdn.bootcdn.net/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script>
+  // 获取cookie设置到header页面中，显示用户的信息
+  let {
+    username,
+    intro,
+    avatar
+  } = JSON.parse(Cookies.get('userInfo'));
+  // 回显图片
+  $('#avatar').attr('src', avatar)
+  $("#username").text(username)
+</script>

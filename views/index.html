@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>小眠后台管理系统</title>
+  <title>德德后台管理系统</title>
   <link rel="stylesheet" href="/assets/layui/css/layui.css">
 </head>
 
@@ -16,30 +16,79 @@
     <!-- 导入公共页面 -->
     {{ include "./common/side.html" }}
 
+
+
     <div class="layui-body">
       <!-- 内容主体区域 -->
-      <div style="padding: 15px;">首页区域 {{ age }}</div>
+      <div style="padding: 15px;">
+        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="main" style="width: 800px;height:400px;"></div>
+      </div>
     </div>
 
     <div class="layui-footer">
       <!-- 底部固定区域 -->
       底部固定区域
     </div>
+
   </div>
   <script src="/assets/layui/layui.js"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
   <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+  <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
   <script>
-    // 获取cookie设置到header页面中，显示用户的信息
-    let { username, intro, avatar } = JSON.parse(Cookies.get('userInfo'))
+
+    // 加载图表
+    function loadGraphy(cates, totals) {
+      // 基于准备好的dom，初始化echarts实例
+      var myChart = echarts.init(document.getElementById('main'));
+
+      // 指定图表的配置项和数据
+      var option = {
+        title: {
+          text: '分类文章统计'
+        },
+        tooltip: {},
+        legend: {
+          data: ['篇数']
+        },
+        xAxis: {
+          data: cates
+        },
+        yAxis: {},
+        series: [{
+          name: '篇数',
+          type: 'bar',
+          data: totals
+        }]
+      };
+
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+    }
+
+    $.get('/cateCount').then(res => {
+      console.log(res)
+      // 组装两个一维数组
+      let cates = [];
+      let totals = [];
+      res.forEach(item => {
+        cates.push(item.cate_name)
+        totals.push(item.total)
+      })
+      loadGraphy(cates, totals);
+    })
+
+
 
     //JS 
-    layui.use(['element', 'layer', 'util'], async function () {
-      var element = layui.element
-        , layer = layui.layer
-        , util = layui.util
-        , $ = layui.$;
-      $("#username").text(username)
+    layui.use(['upload', 'element', 'layer', 'util'], async function () {
+      var element = layui.element,
+        layer = layui.layer,
+        upload = layui.upload,
+        util = layui.util,
+        $ = layui.$;
+
       const result = await $.get('/systemData')
 
       let logoText = ''
@@ -52,8 +101,8 @@
       $("#logoText").text(logoText)
       // 存储到本地存储或cookie，供其他页面使用
       localStorage.setItem('logoText', logoText)
-    });
 
+    });
 
     let logoText = localStorage.getItem('logoText')
     $("#logoText").text(logoText)
@@ -80,6 +129,8 @@
         avatar,
         intro
       } = JSON.parse(Cookies.get('userInfo'))
+
+      // 弹窗模板
       let userTemplate = `
         <div>
           <div class="layui-form-item">
@@ -89,12 +140,12 @@
             </div>
           </div>
           <div class="layui-form-item">
-            <label class="layui-form-label">您的照片</label>
+            <label class="layui-form-label">你的照骗</label>
             <div class="layui-input-block">
               <div class="layui-upload">
                 <button type="button" class="layui-btn" id="test1">上传图片</button>
                 <div class="layui-upload-list">
-                  <img class="layui-upload-img" id="demo1">
+                  <img class="layui-upload-img" style="width:80px" id="demo1">
                   <p id="demoText"></p>
                 </div>
                 <div style="width: 95px;">
@@ -116,24 +167,28 @@
           </div>
         </div>
       `;
-
-      // 页面层
+      //页面层
       layer.open({
         title: "修改个人信息",
         type: 1,
-        skin: 'layui-layer-rim', // 加上边框
-        area: ['420px', '540px'], // 宽高
+        skin: 'layui-layer-rim', //加上边框
+        area: ['420px', '540px'], //宽高
         content: userTemplate,
         success: function (layero, index) {
           // 初始化上传
           initUpload();
+          // 回显图片
+          let {
+            avatar
+          } = JSON.parse(Cookies.get('userInfo'));
+          $("#demo1").attr('src', avatar)
         }
       });
     })
 
     // 上传文件
     function initUpload() {
-      // 常规使用 - 普通图片上传
+      //常规使用 - 普通图片上传
       const upload = layui.upload;
       const element = layui.element;
       var uploadInst = upload.render({
@@ -141,27 +196,35 @@
         url: '/avatar' //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
         ,
         before: function (obj) {
-          // 预读本地文件示例，不支持ie8
+          //预读本地文件示例，不支持ie8
           obj.preview(function (index, file, result) {
-            $('#demo1').attr('src', result);   // 图片链接（base64）
+            $('#demo1').attr('src', result); //图片链接（base64）
           });
 
-          element.progress('demo', '0%');     // 进度条复位
+          element.progress('demo', '0%'); //进度条复位
           layer.msg('上传中', {
             icon: 16,
             time: 0
           });
         },
         done: function (res) {
-          // 如果上传失败
-          if (res.code > 0) {
+          //如果上传失败
+          if (res.code === 0) {
+            let {
+              avatar
+            } = JSON.parse(Cookies.get('userInfo'));
+            // 回显图片
+            $('#avatar').attr('src', avatar)
+            return layer.msg('上传成功');
+
+          } else {
             return layer.msg('上传失败');
           }
-          // 上传成功的一些操作
-          $('#demoText').html('');   // 置空上传失败的状态
+          //上传成功的一些操作
+          $('#demoText').html(''); //置空上传失败的状态
         },
         error: function () {
-          // 演示失败状态，并实现重传
+          //演示失败状态，并实现重传
           var demoText = $('#demoText');
           demoText.html(
             '<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
@@ -169,10 +232,10 @@
             uploadInst.upload();
           });
         }
-        // 进度条
+        //进度条
         ,
         progress: function (n, elem, e) {
-          element.progress('demo', n + '%'); // 可配合 layui 进度条元素使用
+          element.progress('demo', n + '%'); //可配合 layui 进度条元素使用
           if (n == 100) {
             layer.msg('上传完毕', {
               icon: 1
@@ -206,6 +269,7 @@
 
     })
   </script>
+
 </body>
 
 </html>

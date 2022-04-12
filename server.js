@@ -12,6 +12,7 @@ const app = express();
 
 // 设置托管静态资源
 app.use('/assets', express.static(path.join(__dirname, 'assets')))
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 // 初始化session
 app.use(session({

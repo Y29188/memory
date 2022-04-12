@@ -1,4 +1,11 @@
 var express = require('express')
+const multer = require('multer')
+
+// 设置上传的目录
+const upload = multer({
+    dest: './uploads/'
+})
+
 var router = express.Router()
 
 // 导入控制器模块
@@ -27,10 +34,12 @@ router.get('/catelist', CateController.index)
 // 展示文章列表页面
 router.get('/artlist', ArtController.index)
 
+
 // 后台登录页
 router.get('/login', IndexController.login)
 router.get('/test', IndexController.test)
 router.get('/apiData', IndexController.apiData)
+
 
 // 分类列表数据接口
 router.get('/cateData', CateController.cateData)
@@ -48,7 +57,12 @@ router.post('/userLogin', UserController.userLogin)
 router.post('/userLogout', UserController.userLogout)
 
 // 更新用户信息
-router.post('/updUserInfo',UserController.updUserInfo)
+router.post('/updUserInfo', UserController.updUserInfo)
 
+// 更新用户头像
+router.post('/avatar', upload.single('file'), UserController.avatar)
+
+// 统计分类文章总数
+// router.get('/cateCount', CateController.cateCount)
 module.exports = router;
 
