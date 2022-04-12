@@ -42,6 +42,9 @@ router.get('/login', IndexController.login)
 router.get('/test', IndexController.test)
 router.get('/apiData', IndexController.apiData)
 
+// // 修改密码
+// router.post('/newpassword', UserController.newpassword)
+
 
 // 分类列表数据接口
 router.get('/cateData', CateController.cateData)

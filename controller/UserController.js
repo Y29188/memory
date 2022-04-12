@@ -146,6 +146,4 @@ UserController.avatar = async (req, res) => {
 }
 
 
-
-
 module.exports = UserController;
