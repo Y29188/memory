@@ -32,60 +32,60 @@
     </div>
 
   </div>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+<script>
 
-  <script src="https://cdn.bootcdn.net/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
-  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
-  <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
-  <script>
 
+  // 加载图表
+  function loadGraphy(cates, totals) {
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
 
-    // 加载图表
-    function loadGraphy(cates, totals) {
-      // 基于准备好的dom，初始化echarts实例
-      var myChart = echarts.init(document.getElementById('main'));
+    // 指定图表的配置项和数据
+    var option = {
+      title: {
+        text: '分类文章统计'
+      },
+      tooltip: {},
+      legend: {
+        data: ['篇数']
+      },
+      xAxis: {
+        data: cates
+      },
+      yAxis: {},
+      series: [{
+        name: '篇数',
+        type: 'bar',
+        data: totals
+      }]
+    };
 
-      // 指定图表的配置项和数据
-      var option = {
-        title: {
-          text: '分类文章统计'
-        },
-        tooltip: {},
-        legend: {
-          data: ['篇数']
-        },
-        xAxis: {
-          data: cates
-        },
-        yAxis: {},
-        series: [{
-          name: '篇数',
-          type: 'bar',
-          data: totals
-        }]
-      };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+  }
 
-      // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option);
-    }
-
-    $.get('/cateCount').then(res => {
-      console.log(res)
-      // 组装两个一维数组
-      let cates = [];
-      let totals = [];
-      res.forEach(item => {
-        cates.push(item.cate_name)
-        totals.push(item.total)
-      })
-      loadGraphy(cates, totals);
+  $.get('/cateCount').then(res => {
+    console.log(res)
+    // 组装两个一维数组
+    let cates = [];
+    let totals = [];
+    res.forEach(item => {
+      cates.push(item.cate_name)
+      totals.push(item.total)
     })
+    loadGraphy(cates, totals);
+  })
 
 
 
 
 
 
-  </script>
+</script>
 
 </body>
 
