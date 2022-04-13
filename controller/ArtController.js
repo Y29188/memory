@@ -1,15 +1,20 @@
 const path = require('path')
 const moment = require('moment')
 const ArtController = {};
+const { promisify } = require('util');
 
 // 导入模型
-const query = require('../model/query.js')
+const query = require('../model/query.js');
+const fs = require('fs');
+
+const rename = promisify(fs.rename)
 
 
 ArtController.index = (req, res) => {
     res.render(`articlelist.html`)
 }
 
+// 文章数据
 ArtController.artData = async (req, res) => {
     // 1. 接收页码和每页显示的条数
     const {
@@ -54,5 +59,121 @@ ArtController.artData = async (req, res) => {
         msg: "sucess"
     })
 }
+
+// 文章删除
+ArtController.delArtData = async (req, res) => {
+    const {
+        id
+    } = req.body;
+    // 通过id获取文章的pic路径
+    let rows = await query(`select pic from article where id = ${id}`)
+    let pic = rows[0].pic;
+    // 编写sql语句
+    const sql = `delete from article where id = ${id}`
+    const {
+        affectedRows
+    } = await query(sql)
+    // 删除对应的封面图文件
+    if (affectedRows > 0) {
+        const picPath = path.join(path.dirname(__dirname), pic); // 获取完整路径
+        fs.unlink(picPath, () => { })
+        res.json({
+            code: 0,
+            message: "delete sucess"
+        })
+    } else {
+        res.json({
+            code: -7,
+            message: "delete fail"
+        })
+    }
+}
+
+// ArtController.delArtData = async (req, res) => {
+//     const {
+//         id
+//     } = req.body;
+//     const sql = `delete from article where id = ${id}`
+//     const {
+//         affectedRows
+//     } = await query(sql)
+//     // 删除文章的封面图，自行完成
+//     if (affectedRows > 0) {
+//         res.json({
+//             code: 0,
+//             message: "delete sucess"
+//         })
+//     } else {
+//         res.json({
+//             code: -7,
+//             message: "delete fail"
+//         })
+//     }
+//     // return false; // Promise.resolve(false)会进行包装返回
+// }
+
+// 文章添加页面
+ArtController.addArticle = (req, res) => {
+    res.render('addArticle.html')
+}
+
+// 文章添加
+ArtController.addArtData = async (req, res) => {
+    // 1. 接收参数
+    const {
+        title,
+        cate_id,
+        status,
+        content
+    } = req.body;
+    // w未完成
+    const add_date = moment().format('YYYY-MM-DD HH:mm:ss')
+    const author = req.session.userInfo.id;
+    let pic = '';
+    // 上传文件
+    if (req.file) {
+        // 2. 上传文件得到路径
+        let {
+            destination,
+            originalname,
+            filename
+        } = req.file;
+        let extName = originalname.substring(originalname.lastIndexOf('.'))
+        let uploadDir = './uploads'
+        let oldName = path.join(uploadDir, filename);
+        let newName = path.join(uploadDir, filename) + extName;
+
+        try {
+            const result = await rename(oldName, newName)
+            pic = `uploads/${filename}${extName}`
+
+        } catch (err) {
+            console.log('上传失败')
+        }
+
+
+    }
+    console.log(pic);
+    // 2. 编写sql语句
+    let sql = `insert into article(title,cate_id,status,content,add_date,author,pic) 
+            values('${title}','${cate_id}','${status}','${content}','${add_date}','${author}','${pic}')`
+    const {
+        affectedRows
+    } = await query(sql)
+    // 3. 返回结果
+    if (affectedRows > 0) {
+        res.json({
+            code: 0,
+            message: '添加文章成功'
+        })
+    } else {
+        res.json({
+            code: -7,
+            message: '添加文章失败'
+        })
+    }
+}
+
+
 
 module.exports = ArtController;
