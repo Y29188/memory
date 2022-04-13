@@ -62,7 +62,7 @@
   $("#logoText").text(logoText)
 
 
-  // 修改密码
+  // 修改用户登录密码
   $('#changePassword').on('click', () => {
     let passReg = /^.{8,}$/;
     let signReg = /\.|\*|\@/;
@@ -258,7 +258,7 @@
     });
   }
 
-  
+
   // 保存用户信息
   $(document).on('click', "#saveUser", async () => {
     const {

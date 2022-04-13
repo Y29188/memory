@@ -9,7 +9,7 @@ const {
 const query = require('../model/query.js')
 
 const UserController = {};
-const {password_secret} = require('../config/config.js')
+const { password_secret } = require('../config/config.js')
 
 const rename = promisify(fs.rename)
 
@@ -94,7 +94,7 @@ UserController.updUserInfo = async (req, res) => {
         res.json(failData)
     }
 }
-// 头像
+// 上传用户头像
 UserController.avatar = async (req, res) => {
     // 1. 获取用户在session中的信息
     const {
@@ -117,6 +117,11 @@ UserController.avatar = async (req, res) => {
         try {
             const result = await rename(oldName, newName)
             pic = `uploads/${filename}${extName}`
+            // 删除原图，先得到旧图的路径(从session中获取)
+            // uploads/861b974ce9f4bf19e826ebcf1cd7ed64.jpg
+            let oldAvatar = req.session.userInfo.avatar;
+            oldAvatar = path.join(path.dirname(__dirname), oldAvatar)
+            fs.unlink(oldAvatar, (err) => { })
         } catch (err) {
             console.log('上传失败')
         }
@@ -145,7 +150,7 @@ UserController.avatar = async (req, res) => {
     }
 }
 
-// 修改密码
+// 修改用户登录密码
 UserController.newPassword = async (req, res) => {
     let { id, oldpassword, newpassword } = req.body
     oldpassword = md5(`${oldpassword}${password_secret}`)

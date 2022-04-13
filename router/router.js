@@ -42,8 +42,6 @@ router.get('/login', IndexController.login)
 router.get('/test', IndexController.test)
 router.get('/apiData', IndexController.apiData)
 
-// 修改密码
-router.post('/newPassword', UserController.newPassword)
 
 
 // 分类列表数据接口
@@ -66,6 +64,9 @@ router.post('/updUserInfo', UserController.updUserInfo)
 
 // 更新用户头像
 router.post('/avatar', upload.single('file'), UserController.avatar)
+
+// 修改用户登录密码
+router.post('/newPassword', UserController.newPassword)
 
 // 统计分类文章总数
 router.get('/cateCount', CateController.cateCount)
