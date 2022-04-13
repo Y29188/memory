@@ -8,7 +8,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="/assets/css/login.css">
     
-
 <body>
     <div class="agileheader">
         <h1></h1>
@@ -28,6 +27,7 @@
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/layui/layui.js"></script>
 <script>
+    // 用户登录
     $("#loginBtn").on('click', () => {
         // 获取表单项数据
         const data = $('#loginForm').serialize()
@@ -42,39 +42,12 @@
         })
         return false;
     })
+
+
+    
 </script>
 
 </html>
 
 
 
-<!-- <body>
-    <div class="login">
-        <h1>小眠博客管理系统</h1>
-        <form method="post" id="loginForm">
-            <input type="text" name="username" placeholder="Username" />
-            <input type="password" name="password" placeholder="Password" />
-            <button type="submit" id="loginBtn" class="btn btn-primary btn-block btn-large">Login In</button>
-        </form>
-    </div>
-</body>
-<script src="/assets/js/jquery.min.js"></script>
-<script src="/assets/layui/layui.js"></script>
-<script>
-    $("#loginBtn").on('click', () => {
-        // 获取表单项数据
-        const data = $('#loginForm').serialize()
-        console.log(data)
-        $.post('/userLogin', data).then(res => {
-            const { code, message } = res;
-            if (code === 0) {
-                location.href = '/'
-            } else {
-                layer.msg(message)
-            }
-        })
-        return false;
-    })
-</script> -->
-
-</html>

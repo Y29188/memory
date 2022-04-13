@@ -9,9 +9,7 @@ const {
 const query = require('../model/query.js')
 
 const UserController = {};
-const {
-    password_secret
-} = require('../config/config.js')
+const {password_secret} = require('../config/config.js')
 
 const rename = promisify(fs.rename)
 
@@ -147,5 +145,24 @@ UserController.avatar = async (req, res) => {
     }
 }
 
+// 修改密码
+UserController.newPassword = async (req, res) => {
+    let { id, oldpassword, newpassword } = req.body
+    oldpassword = md5(`${oldpassword}${password_secret}`)
+    newpassword = md5(`${newpassword}${password_secret}`)
+    const sql1 = `select password from users where password = '${oldpassword}'`;
+    const results1 = await query(sql1);
+    if (results1.length > 0) {
+        const sql2 = `update users set password = '${newpassword}' where id = ${id}`;
+        const { affectedRows } = await query(sql2);
+        if (affectedRows > 0) {
+            res.json({ err: "20000", msg: "修改密码成功。" })
+        } else {
+            res.json({ err: "20006", msg: "修改密码失败。" })
+        }
+    } else {
+        res.json({ err: "20005", msg: "旧密码不正确。" })
+    }
+}
 
 module.exports = UserController;
