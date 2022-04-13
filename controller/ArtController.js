@@ -3,7 +3,6 @@ const moment = require('moment')
 const ArtController = {};
 
 // 导入模型
-const viewsDir = path.join(path.dirname(__dirname), 'views')
 const query = require('../model/query.js')
 
 
@@ -44,7 +43,7 @@ ArtController.artData = async (req, res) => {
         item.statusText = status == 1 ? '审核通过' : "审核中"
         item.cate_name = cate_name || '未分类'
         item.username = username || '匿名者'
-        item.add_date = moment(add_date).format('YYYY-mm-DD HH:MM:SS')
+        item.add_date = moment(add_date).format('YYYY-MM-DD HH:mm:ss')
         return item;
     })
     // 4. 响应数据
