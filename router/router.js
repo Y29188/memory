@@ -80,8 +80,12 @@ router.get('/addArticle', ArtController.addArticle)
 router.post('/addArtData', upload.single('pic'), ArtController.addArtData)
 // 删除文章接口
 router.post('/delArtData', ArtController.delArtData)
+// 展示编辑文章页面
+router.get('/editArt', ArtController.editArt)
+// 获取单条数据接口
+router.get('/reviseOneArt', ArtController.reviseOneArt)
 // 编辑文章接口
-
+router.post('/updArtData', upload.single('pic'), ArtController.updArtData)
 
 
 

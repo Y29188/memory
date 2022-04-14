@@ -1,11 +1,12 @@
 const path = require('path')
+const fs = require('fs');
 const moment = require('moment')
 const ArtController = {};
 const { promisify } = require('util');
 
 // 导入模型
 const query = require('../model/query.js');
-const fs = require('fs');
+
 
 const rename = promisify(fs.rename)
 
@@ -14,7 +15,7 @@ ArtController.index = (req, res) => {
     res.render(`articlelist.html`)
 }
 
-// 文章数据
+// 文章数据接口
 ArtController.artData = async (req, res) => {
     // 1. 接收页码和每页显示的条数
     const {
@@ -76,7 +77,7 @@ ArtController.addArticle = (req, res) => {
     res.render('addArticle.html')
 }
 
-// 文章添加
+// 文章添加接口
 ArtController.addArtData = async (req, res) => {
     // 1. 接收参数
     const {
@@ -133,7 +134,7 @@ ArtController.addArtData = async (req, res) => {
     }
 }
 
-// 文章删除
+// 文章删除接口
 ArtController.delArtData = async (req, res) => {
     const {
         id
@@ -162,7 +163,77 @@ ArtController.delArtData = async (req, res) => {
     }
 }
 
-// 文章编辑
+// 展示编辑文章页面
+ArtController.editArt = (req, res) => {
+    res.render('editArticle.html')
+}
+
+ArtController.reviseOneArt = async (req, res) => {
+    // 1. 接收参数
+    let {
+        i
+    } = req.query
+    // 2. 查询单条的sql语句
+    const sql = `select * from article where id = ${i}`;
+    const result = await query(sql);
+    res.json(result[0]);
+}
+
+ArtController.updArtData = async (req, res) => {
+    // 1. 接收参数
+    let {
+        id,
+        title,
+        content,
+        cate_id,
+        isUpdPic,
+        status,
+        oldPic
+    } = req.body;
+    // 2. 是否上传文件
+    let pic = '';
+    let sql;
+    if (isUpdPic == 1) {
+        // 上传文件
+        let {
+            destination,
+            originalname,
+            filename
+        } = req.file;
+        let extName = originalname.substring(originalname.lastIndexOf('.'));
+        let uploadDir = './uploads';
+        let oldName = path.join(uploadDir, filename);
+        let newName = path.join(uploadDir, filename) + extName;
+
+        try {
+            await rename(oldName, newName);
+            pic = `uploads/${filename}${extName}`;
+            let oldPicFullPath = path.join(path.dirname(__dirname), oldPic);
+            fs.unlink(oldPicFullPath, (err) => { })
+        } catch (err) {
+            console.log('上传失败')
+        }
+        sql = `update article set title='${title}',content='${content}',cate_id='${cate_id}',status='${status}', pic='${pic}' where id = ${id} `;
+    } else {
+        sql = `update article set title='${title}',content='${content}',cate_id='${cate_id}',status='${status}' where id = ${id} `;
+    }
+
+    // 3. 执行sql语句
+    const {
+        affectedRows
+    } = await query(sql)
+    if (affectedRows > 0) {
+        res.json({
+            code: 0,
+            message: "update success"
+        })
+    } else {
+        res.json({
+            code: -9,
+            message: "update fail"
+        })
+    }
+}
 
 
 module.exports = ArtController;
