@@ -80,7 +80,7 @@ router.get('/addArticle', ArtController.addArticle)
 router.post('/addArtData', upload.single('pic'), ArtController.addArtData)
 // 删除文章接口
 router.post('/delArtData', ArtController.delArtData)
-
+// 编辑文章接口
 
 
 

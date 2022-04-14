@@ -85,6 +85,12 @@
         // 初始化富文本编辑器
         const E = window.wangEditor
         editor = new E('#content')
+        // 1. 上传文件会变成base64
+        editor.config.uploadImgShowBase64 = true
+        editor.config.uploadImgMaxSize = 0.5 * 1024 * 1024 // 0.5M
+
+        // 2. 可以自己配置上传的接口，图片上传至自己的服务器
+        // editor.config.uploadImgServer = '/upload-img'
         editor.create()
     }
 

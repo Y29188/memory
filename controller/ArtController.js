@@ -19,10 +19,14 @@ ArtController.artData = async (req, res) => {
     // 1. 接收页码和每页显示的条数
     const {
         page,
-        limit
+        limit,
+        keyword
     } = req.query;
     // 2. 查询总记录数
-    const sql1 = 'select count(id) as count from article'
+    let sql1 = `select count(id) as count from article where 1 `;
+    if (keyword) {
+        sql1 += ` and title like '%${keyword}%' `
+    }
     const result = await query(sql1)
     const {
         count
@@ -33,10 +37,17 @@ ArtController.artData = async (req, res) => {
     // page=2 offset = 2,2，以此类推
 
     const offset = (page - 1) * limit;
-    const sql2 = `select t1.*,t2.cate_name,t3.username from article t1 
+    let sql2 = `select t1.*,t2.cate_name,t3.username from article t1 
         left join category t2 on t1.cate_id = t2.cate_id 
-        left join users t3 on t1.author = t3.id
-        limit ${offset},${limit}`
+        left join users t3 on t1.author = t3.id 
+        where 1 `
+
+    if (keyword) {
+        sql2 += ` and t1.title like '%${keyword}%'`;
+    }
+    sql2 += `order by t1.id desc
+    limit ${offset},${limit}`
+
     let data = await query(sql2)
     data = data.map((item) => {
         const {
@@ -60,58 +71,6 @@ ArtController.artData = async (req, res) => {
     })
 }
 
-// 文章删除
-ArtController.delArtData = async (req, res) => {
-    const {
-        id
-    } = req.body;
-    // 通过id获取文章的pic路径
-    let rows = await query(`select pic from article where id = ${id}`)
-    let pic = rows[0].pic;
-    // 编写sql语句
-    const sql = `delete from article where id = ${id}`
-    const {
-        affectedRows
-    } = await query(sql)
-    // 删除对应的封面图文件
-    if (affectedRows > 0) {
-        const picPath = path.join(path.dirname(__dirname), pic); // 获取完整路径
-        fs.unlink(picPath, () => { })
-        res.json({
-            code: 0,
-            message: "delete sucess"
-        })
-    } else {
-        res.json({
-            code: -7,
-            message: "delete fail"
-        })
-    }
-}
-
-// ArtController.delArtData = async (req, res) => {
-//     const {
-//         id
-//     } = req.body;
-//     const sql = `delete from article where id = ${id}`
-//     const {
-//         affectedRows
-//     } = await query(sql)
-//     // 删除文章的封面图，自行完成
-//     if (affectedRows > 0) {
-//         res.json({
-//             code: 0,
-//             message: "delete sucess"
-//         })
-//     } else {
-//         res.json({
-//             code: -7,
-//             message: "delete fail"
-//         })
-//     }
-//     // return false; // Promise.resolve(false)会进行包装返回
-// }
-
 // 文章添加页面
 ArtController.addArticle = (req, res) => {
     res.render('addArticle.html')
@@ -126,7 +85,7 @@ ArtController.addArtData = async (req, res) => {
         status,
         content
     } = req.body;
-    // w未完成
+    // 未完成
     const add_date = moment().format('YYYY-MM-DD HH:mm:ss')
     const author = req.session.userInfo.id;
     let pic = '';
@@ -174,6 +133,36 @@ ArtController.addArtData = async (req, res) => {
     }
 }
 
+// 文章删除
+ArtController.delArtData = async (req, res) => {
+    const {
+        id
+    } = req.body;
+    // 通过id获取文章的pic路径
+    let rows = await query(`select pic from article where id = ${id}`)
+    let pic = rows[0].pic;
+    // 编写sql语句
+    const sql = `delete from article where id = ${id}`
+    const {
+        affectedRows
+    } = await query(sql)
+    // 删除对应的封面图文件
+    if (affectedRows > 0) {
+        const picPath = path.join(path.dirname(__dirname), pic); // 获取完整路径
+        fs.unlink(picPath, () => { })
+        res.json({
+            code: 0,
+            message: "delete sucess"
+        })
+    } else {
+        res.json({
+            code: -7,
+            message: "delete fail"
+        })
+    }
+}
+
+// 文章编辑
 
 
 module.exports = ArtController;
