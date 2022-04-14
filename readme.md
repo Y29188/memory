@@ -20,7 +20,10 @@ git默认不能上传一个空的文件夹，若要上传，则需要在此文�
 最大的cdn库： https://cdnjs.com/
 
 # 图片预览
-lightbox: https://cdnjs.com/libraries/lightbox2 photoswipe: https://cdnjs.com/libraries/photoswipe 具体使用： 1. 看文档 下载案例， 2. 没有案例则看github仓库 案例存放在目录 /example /demo
+lightbox: https://cdnjs.com/libraries/lightbox2 photoswipe: https://cdnjs.com/libraries/photoswipe 
+具体使用： 
+1. 看文档 下载案例， 
+2. 没有案例则看github仓库 案例存放在目录 /example /demo
 
 sql where 1
 sql : where = 1 为了便于后面拼接查询条件，而避免出错。
