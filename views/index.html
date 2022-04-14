@@ -47,21 +47,23 @@
     // 指定图表的配置项和数据
     var option = {
       title: {
-        text: '分类文章统计'
-      },
-      tooltip: {},
-      legend: {
-        data: ['篇数']
+        text: '分类文章统计',
+        left: 'center'
       },
       xAxis: {
+        type: 'category',
         data: cates
       },
-      yAxis: {},
-      series: [{
-        name: '篇数',
-        type: 'bar',
-        data: totals
-      }]
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: totals,
+          type: 'line',
+          smooth: true
+        }
+      ]
     };
 
 
