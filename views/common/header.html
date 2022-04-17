@@ -1,5 +1,17 @@
+<style>
+  .logo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50px;
+  }
+</style>
 <div class="layui-header">
-  <div class="layui-logo layui-hide-xs layui-bg-black" id="logoText">小眠博客管理系统</div>
+  <div class="layui-logo layui-hide-xs layui-bg-black">
+    <div class="layui-logo layui-hide-xs layui-bg-black">
+      <img src="" alt="" id="logo" class="logo">
+      <span id="logoText">小眠博客管理系统</span>
+    </div>
+  </div>
 
   <ul class="layui-nav layui-layout-right">
     <li class="layui-nav-item layui-hide layui-show-md-inline-block">
@@ -23,6 +35,7 @@
 <script src="/assets/layui/layui.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script src="/assets/js/System_style.js"></script>
 <script>
   // 获取cookie设置到header页面中，显示用户的信息
   let {
@@ -34,29 +47,6 @@
   // 回显图片
   $('#avatar').attr('src', avatar)
   $("#username").text(username)
-
-  // logo设置
-  layui.use(['upload', 'element', 'layer', 'util'], async function () {
-    var element = layui.element,
-      layer = layui.layer,
-      upload = layui.upload,
-      util = layui.util,
-      $ = layui.$;
-
-    const { data } = await $.get('/systemData')
-
-    let logoText = ''
-    data.find(item => {
-      if (item.system_name === 'logoText') {
-        logoText = item.val;
-        return true
-      }
-    })
-    $("#logoText").text(logoText)
-    // 存储到本地存储或cookie，供其他页面使用
-    localStorage.setItem('logoText', logoText)
-
-  });
 
   let logoText = localStorage.getItem('logoText')
   $("#logoText").text(logoText)
@@ -118,7 +108,7 @@
     })
   })
 
-  
+
   // 退出
   $("#logout").on('click', async (event) => {
     const {

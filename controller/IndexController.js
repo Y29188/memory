@@ -1,4 +1,9 @@
 const path = require('path')
+const { promisify } = require('util');
+const fs = require('fs')
+
+const rename = promisify(fs.rename)
+const unlink = promisify(fs.unlink)
 
 const viewsDir = path.join(path.dirname(__dirname), 'views')
 
@@ -97,80 +102,37 @@ IndexController.systemData = async (req, res) => {
     }
     res.json(responseData)
 }
-// 系统设置：编辑
-IndexController.updSystemData = async (req, res) => {
-    //1. 接收post参数
-    const {
-        system_id,
-        system_name,
-        val
-    } = req.body;
-    //2. 编写sql语句，执行，返回json结果
-    const sql = `update settings set system_name = '${system_name}',val = ${val} 
-    where system_id = ${system_id}`;
-    const {
-        affectedRows
-    } = await query(sql)
-    const successData = {
-        code: 0,
-        message: "update success"
+// 系统设置:logo
+IndexController.updsystemData = async (req, res) => {
+    let { logoText, oldPic } = req.body
 
-    }
-    const failData = {
-        code: 1,
-        message: "fail success"
-    }
+    if (req.file) {
+        const sql1 = `update settings set val = '${logoText}' where Settings_id = 1`;
+        const { affectedRows: af1 } = await query(sql1);
 
-    if (affectedRows > 0) {
-        res.json(successData)
-    } else {
-        res.json(failData)
-    }
-}
-// 系统设置：删除
-IndexController.delSystemData = async (req, res) => {
-    const {
-        system_id
-    } = req.body;
-    const sql = `delete from settings where system_id = ${system_id}`
-    const {
-        affectedRows
-    } = await query(sql)
-    const successData = {
-        code: 0,
-        message: "delete success"
-    }
-    const failData = {
-        code: 1,
-        message: "delete fail"
-    }
-
-    if (affectedRows > 0) {
-        res.json(successData)
-    } else {
-        res.json(failData)
-    }
-}
-// 系统设置：添加
-IndexController.addSystemData = async (req, res) => {
-    const { system_name, val } = req.body;
-    const sql = `insert into category(system_name,val) values('${system_name}',${val})`;
-    const { affectedRows } = await query(sql);
-    const successData = {
-        code: 0,
-        message: "添加成功"
-    }
-    const failData = {
-        code: 1,
-        message: "添加失败"
-    }
+        let { originalname, filename } = req.file;
+        let uploadDir = './uploads'
+        let extName = originalname.substring(originalname.lastIndexOf('.'))
+        let oldName = path.join(uploadDir, filename);
+        let newName = path.join(uploadDir, filename) + extName;
+        // 修改上传文件名字
+        await rename(oldName, newName)
 
 
-    if (affectedRows > 0) {
-        res.json(successData);
-    } else {
-        res.json(failData);
+        const picPath = path.join(path.dirname(__dirname), oldPic);
+        await unlink(picPath)
+
+        // 上传成功，把路径写到sql语句中，插入到数据库中
+        pic = `/uploads/${filename}${extName}`
+        const sql2 = `update settings set val = '${pic}' where Settings_id = 2`;
+        const { affectedRows } = await query(sql2);
+        affectedRows && af1 > 0 ? res.json({ err: '20000', msg: '编辑成功' }) : res.json({ err: '20005', msg: '编辑失败' })
+        return;
     }
+
+    const sql1 = `update settings set val = '${logoText}' where Settings_id = 1`;
+    const { affectedRows } = await query(sql1);
+    affectedRows > 0 ? res.json({ err: '20000', msg: '编辑成功' }) : res.json({ err: '20004', msg: '编辑失败' })
 }
 
 

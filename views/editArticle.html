@@ -82,9 +82,9 @@
 <script src="https://cdn.jsdelivr.net/npm/wangeditor@latest/dist/wangEditor.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
 <script>
-    let reg = /\?i=(\d+)/
-    console.log(location.search.match(reg));
-    let [, i] = location.search.match(reg)
+    const reg = /\?i=(\d+)/
+    // console.log(location.search.match(reg));
+    const [, i] = location.search.match(reg)
     let isUpdPic = 0;  // 0 => 不更新  1=> 更新
     let editor;
     let oldPic;
@@ -163,16 +163,16 @@
         // 获取富文本内容
         const content = editor.txt.html();
         formData.set('content', content);
-        formData.set('id', id);
+        formData.set('id', i);
         formData.set('isUpdPic', isUpdPic);
         formData.set('oldPic', oldPic);
         // 2. 发起请求
         const { code, message } = await $.ajax({
-            url: 'updArtData',
-            data: 'post',
-            date: formData,
+            url: "/updArtData",
+            type: 'post',
+            data: formData,
             contentType: false,
-            processData: false,
+            processData: false
         })
         // 3. 提示
         layer.msg(message);

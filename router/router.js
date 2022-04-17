@@ -63,12 +63,8 @@ router.post('/addCateData', CateController.addCateData)
 router.get('/setting', IndexController.setting)
 // 系统设置：获取数据接口
 router.get('/systemData', IndexController.systemData)
-// 系统设置：添加数据接口
-router.post('/addSystemData', IndexController.addSystemData)
-// 系统设置：修改数据接口
-router.post('/updSystemData', IndexController.updSystemData)
-// 系统设置：删除数据接口
-router.post('/delSystemData', IndexController.delSystemData)
+// 系统设置：logo
+router.post('/updsystemData', upload.single('blogLogo'), IndexController.updsystemData)
 
 
 // 统计分类文章总数
