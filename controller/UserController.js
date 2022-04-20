@@ -33,13 +33,13 @@ UserController.userLogin = async (req, res) => {
         })
         res.json({
             code: 0,
-            message: "login success"
+            message: 'login success'
         })
     } else {
         // 失败则提示用户
         res.json({
             code: -2,
-            message: "login fail"
+            message: 'login fail'
         })
     }
 
@@ -56,7 +56,7 @@ UserController.userLogout = async (req, res) => {
     // 2. 响应json
     res.json({
         code: 0,
-        message: "logout success"
+        message: 'logout success'
     })
 
 }
@@ -72,11 +72,11 @@ UserController.updUserInfo = async (req, res) => {
     } = await query(sql)
     const successData = {
         code: 0,
-        message: "update user success"
+        message: 'update user success'
     }
     const failData = {
         code: -5,
-        message: "update user fail"
+        message: 'update user fail'
     }
 
     if (affectedRows > 0) {
@@ -105,7 +105,6 @@ UserController.avatar = async (req, res) => {
     if (req.file) {
         // 2. 上传文件得到路径
         let {
-            destination,
             originalname,
             filename
         } = req.file;
@@ -115,13 +114,13 @@ UserController.avatar = async (req, res) => {
         let newName = path.join(uploadDir, filename) + extName;
 
         try {
-            const result = await rename(oldName, newName)
+            await rename(oldName, newName)
             pic = `uploads/${filename}${extName}`
             // 删除原图，先得到旧图的路径(从session中获取)
             // uploads/861b974ce9f4bf19e826ebcf1cd7ed64.jpg
             let oldAvatar = req.session.userInfo.avatar;
             oldAvatar = path.join(path.dirname(__dirname), oldAvatar)
-            fs.unlink(oldAvatar, (err) => { })
+            fs.unlink(oldAvatar, () => { })
         } catch (err) {
             console.log('上传失败')
         }
@@ -139,12 +138,12 @@ UserController.avatar = async (req, res) => {
         })
         res.json({
             code: 0,
-            message: "upload success"
+            message: 'upload success'
         })
     } else {
         res.json({
             code: -6,
-            message: "upload fail",
+            message: 'upload fail',
 
         })
     }
@@ -161,12 +160,12 @@ UserController.newPassword = async (req, res) => {
         const sql2 = `update users set password = '${newpassword}' where id = ${id}`;
         const { affectedRows } = await query(sql2);
         if (affectedRows > 0) {
-            res.json({ err: "20000", msg: "修改密码成功。" })
+            res.json({ err: '20000', msg: '修改密码成功。' })
         } else {
-            res.json({ err: "20006", msg: "修改密码失败。" })
+            res.json({ err: '20006', msg: '修改密码失败。' })
         }
     } else {
-        res.json({ err: "20005", msg: "旧密码不正确。" })
+        res.json({ err: '20005', msg: '旧密码不正确。' })
     }
 }
 

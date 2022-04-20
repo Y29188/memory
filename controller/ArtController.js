@@ -12,7 +12,7 @@ const rename = promisify(fs.rename)
 
 
 ArtController.index = (req, res) => {
-    res.render(`articlelist.html`)
+    res.render('articlelist.html')
 }
 
 // 文章数据接口
@@ -24,7 +24,7 @@ ArtController.artData = async (req, res) => {
         keyword
     } = req.query;
     // 2. 查询总记录数
-    let sql1 = `select count(id) as count from article where 1 `;
+    let sql1 = 'select count(id) as count from article where 1 ';
     if (keyword) {
         sql1 += ` and title like '%${keyword}%' `
     }
@@ -57,7 +57,7 @@ ArtController.artData = async (req, res) => {
             cate_name,
             username
         } = item;
-        item.statusText = status == 1 ? '审核通过' : "审核中"
+        item.statusText = status == 1 ? '审核通过' : '审核中'
         item.cate_name = cate_name || '未分类'
         item.username = username || '匿名者'
         item.add_date = moment(add_date).format('YYYY-MM-DD HH:mm:ss')
@@ -68,7 +68,7 @@ ArtController.artData = async (req, res) => {
         count,
         data,
         code: 0,
-        msg: "sucess"
+        msg: 'sucess'
     })
 }
 
@@ -94,7 +94,6 @@ ArtController.addArtData = async (req, res) => {
     if (req.file) {
         // 2. 上传文件得到路径
         let {
-            destination,
             originalname,
             filename
         } = req.file;
@@ -104,7 +103,7 @@ ArtController.addArtData = async (req, res) => {
         let newName = path.join(uploadDir, filename) + extName;
 
         try {
-            const result = await rename(oldName, newName)
+            await rename(oldName, newName)
             pic = `uploads/${filename}${extName}`
 
         } catch (err) {
@@ -153,12 +152,12 @@ ArtController.delArtData = async (req, res) => {
         fs.unlink(picPath, () => { })
         res.json({
             code: 0,
-            message: "delete sucess"
+            message: 'delete sucess'
         })
     } else {
         res.json({
             code: -7,
-            message: "delete fail"
+            message: 'delete fail'
         })
     }
 }
@@ -196,7 +195,6 @@ ArtController.updArtData = async (req, res) => {
     if (isUpdPic == 1) {
         // 上传文件
         let {
-            destination,
             originalname,
             filename
         } = req.file;
@@ -209,7 +207,7 @@ ArtController.updArtData = async (req, res) => {
             await rename(oldName, newName);
             pic = `uploads/${filename}${extName}`;
             let oldPicFullPath = path.join(path.dirname(__dirname), oldPic);
-            fs.unlink(oldPicFullPath, (err) => { })
+            fs.unlink(oldPicFullPath, () => { })
         } catch (err) {
             console.log('上传失败')
         }
@@ -225,12 +223,12 @@ ArtController.updArtData = async (req, res) => {
     if (affectedRows > 0) {
         res.json({
             code: 0,
-            message: "update success"
+            message: 'update success'
         })
     } else {
         res.json({
             code: -9,
-            message: "update fail"
+            message: 'update fail'
         })
     }
 }

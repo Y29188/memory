@@ -3,12 +3,17 @@ const path = require('path');
 const cors = require('cors');
 const artTemplate = require('art-template');
 const express_template = require('express-art-template');
-const session = require('express-session')
-const checkSessAuth = require('./middleware/checkSessAuth')
+const session = require('express-session');
+const checkSessAuth = require('./middleware/checkSessAuth');
+
+// 导入环境变量
+require('dotenv').config()
+console.log(process.env.db_username);
+console.log(process.env.db_password);
 
 // 导入路由模块中间件
-const router = require('./router/router.js')
-const apiRouter = require('./router/apiRouter.js')
+const router = require('./router/router.js');
+const apiRouter = require('./router/apiRouter.js');
 
 const app = express();
 

@@ -1,4 +1,4 @@
-const path = require('path')
+// const path = require('path')
 const CateController = {};
 
 // 导入模型
@@ -6,7 +6,7 @@ const query = require('../model/query.js')
 
 
 CateController.index = (req, res) => {
-    res.render(`catelist.html`)
+    res.render('catelist.html')
 }
 
 // 分类接口数据
@@ -18,7 +18,7 @@ CateController.cateData = async (req, res) => {
     const responseData = {
         data,
         code: 0,
-        msg: "success"
+        msg: 'success'
     }
     res.json(responseData)
 }
@@ -38,12 +38,12 @@ CateController.updCateData = async (req, res) => {
     } = await query(sql)
     const successData = {
         code: 0,
-        message: "update success"
+        message: 'update success'
 
     }
     const failData = {
         code: 1,
-        message: "fail success"
+        message: 'fail success'
     }
 
     if (affectedRows > 0) {
@@ -63,11 +63,11 @@ CateController.delCateData = async (req, res) => {
     } = await query(sql)
     const successData = {
         code: 0,
-        message: "delete success"
+        message: 'delete success'
     }
     const failData = {
         code: 1,
-        message: "delete fail"
+        message: 'delete fail'
     }
 
     if (affectedRows > 0) {
@@ -83,11 +83,11 @@ CateController.addCateData = async (req, res) => {
     const { affectedRows } = await query(sql);
     const successData = {
         code: 0,
-        message: "添加成功"
+        message: '添加成功'
     }
     const failData = {
         code: 1,
-        message: "添加失败"
+        message: '添加失败'
     }
 
 

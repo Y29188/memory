@@ -6,7 +6,7 @@ const HomeController = {};
 
 // 分类接口
 HomeController.cate = async (req, res) => {
-    const sql = `select * from category order by orderBy desc`
+    const sql = 'select * from category order by orderBy desc'
     const result = await query(sql)
     res.json(result)
 }
